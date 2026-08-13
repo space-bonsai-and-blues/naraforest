@@ -1,0 +1,83 @@
+---
+// Static background: sky, the two green terrain shapes, ponds, creek,
+// and edge trees. No interactivity lives here — that's all in
+// WaymarkerIcon. Anything passed as children renders on top, inside the
+// same coordinate space (viewBox 0 0 680 875).
+---
+
+<svg
+  viewBox="0 0 680 875"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="A forest terrain with paths to each nara forest app"
+  class="nara-forest-terrain"
+>
+  <defs>
+    <linearGradient id="nf-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cfe4f7" />
+      <stop offset="100%" stop-color="#f7f6f1" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="680" height="875" fill="url(#nf-sky)" />
+  <text x="40" y="50" font-family="Georgia, serif" font-size="21" font-weight="500" fill="#33322d">nara forest</text>
+
+  <!-- back bubble: upright, rounder -->
+  <path
+    d="M85,875 C58,760 55,655 80,565 C105,475 155,425 205,375 C250,330 270,205 305,175 C340,148 385,130 435,131 C485,132 515,150 545,168 C595,195 625,260 615,350 C605,440 620,560 605,680 C598,760 605,830 580,875 Z"
+    fill="#bcd9a0"
+    opacity="0.9"
+  />
+
+  <!-- front bubble: smaller, irregular oval, tilted ~30 degrees -->
+  <path
+    d="M350,232 C400,238 452,270 480,325 C505,375 500,440 515,500 C528,555 540,610 520,670 C505,715 490,755 485,795 C478,825 460,850 420,868 C375,885 340,880 300,865 C255,848 220,820 200,780 C180,740 175,700 168,650 C160,590 150,530 155,470 C160,405 175,350 200,315 C222,283 280,258 350,232 Z"
+    fill="#8fbf6a"
+    opacity="0.92"
+    transform="rotate(30 340 560)"
+  />
+
+  <!-- edge trees, four per side -->
+  <polygon points="29,224 61,224 45,184" fill="#5a9e46" /><rect x="42" y="224" width="6" height="14" fill="#7a6248" />
+  <polygon points="24,404 56,404 40,364" fill="#5a9e46" /><rect x="37" y="404" width="6" height="14" fill="#7a6248" />
+  <polygon points="34,584 66,584 50,544" fill="#5a9e46" /><rect x="47" y="584" width="6" height="14" fill="#7a6248" />
+  <polygon points="19,704 51,704 35,664" fill="#5a9e46" /><rect x="32" y="704" width="6" height="14" fill="#7a6248" />
+  <polygon points="619,254 651,254 635,214" fill="#5a9e46" /><rect x="632" y="254" width="6" height="14" fill="#7a6248" />
+  <polygon points="629,434 661,434 645,394" fill="#5a9e46" /><rect x="642" y="434" width="6" height="14" fill="#7a6248" />
+  <polygon points="614,614 646,614 630,574" fill="#5a9e46" /><rect x="627" y="614" width="6" height="14" fill="#7a6248" />
+  <polygon points="624,794 656,794 640,754" fill="#5a9e46" /><rect x="637" y="794" width="6" height="14" fill="#7a6248" />
+
+  <!-- creek: short, points inward toward pond #1 without reaching it -->
+  <path
+    d="M600,150 C580,190 560,200 545,230 C530,260 510,290 498,331"
+    stroke="#7fb8e0"
+    stroke-width="9"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.85"
+  />
+
+  <!-- pond #1 -->
+  <path
+    d="M238,650 C242,630 260,624 275,628 C292,633 300,620 298,640 C296,658 304,662 292,672 C280,682 260,680 248,668 C238,660 234,655 238,650 Z"
+    fill="#7fb8e0"
+    opacity="0.85"
+  />
+
+  <!-- pond #2 -->
+  <path
+    d="M451,470 C456,440 490,428 515,435 C540,442 550,460 546,480 C542,500 550,508 530,512 C510,516 480,510 460,495 C448,486 446,478 451,470 Z"
+    fill="#7fb8e0"
+    opacity="0.85"
+  />
+
+  <slot />
+</svg>
+
+<style>
+  .nara-forest-terrain {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

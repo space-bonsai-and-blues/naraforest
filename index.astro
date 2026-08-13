@@ -1,0 +1,42 @@
+---
+import Terrain from "../components/Terrain.astro";
+import WaymarkerIcon from "../components/WaymarkerIcon.astro";
+import WelcomeSignpost from "../components/WelcomeSignpost.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nara forest</title>
+  </head>
+  <body>
+    <Terrain>
+      <WelcomeSignpost x={140} y={850} />
+      <WaymarkerIcon
+        x={176}
+        y={713}
+        blazeColor="#4a7fc9"
+        symbol="thread"
+        label="thought trail"
+        href="#"
+      />
+      <WaymarkerIcon
+        x={455}
+        y={656}
+        blazeColor="#d9a13a"
+        symbol="dots"
+        label="trailhead"
+        href="#"
+      />
+      <WaymarkerIcon
+        x={238}
+        y={350}
+        blazeColor="#3f9e83"
+        symbol="grid"
+        label="logic models"
+        href="#"
+      />
+    </Terrain>
+  </body>
+</html>
