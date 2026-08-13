@@ -3,6 +3,11 @@
 // blaze band, and a small symbol — the only things that change between
 // apps. Position is given in the same viewBox coordinates as the parent
 // <Terrain> svg, so it stays proportionally placed at any screen size.
+//
+// Note: this used to be wrapped in an <a> tag, but browsers silently
+// break SVG content out of the svg tree when they hit a raw <a> inside
+// it (a quirk of HTML's "foreign content" parsing rules). So the link
+// role now lives on the <g> itself, handled entirely by the script below.
 import { TRUNK_PATH, BLAZE } from "../lib/waymarker-shapes";
 import type { SymbolType } from "../lib/waymarker-shapes";
 
@@ -18,51 +23,52 @@ interface Props {
 const { x, y, blazeColor, symbol, label, href } = Astro.props;
 ---
 
-<a
-  href={href}
-  class="waymarker-link"
-  aria-label={label}
+<g
+  class="waymarker-icon waymarker-link"
+  transform={`translate(${x}, ${y})`}
   style={`--blaze-color: ${blazeColor}`}
+  role="link"
+  tabindex="0"
+  aria-label={label}
+  data-href={href}
 >
-  <g class="waymarker-icon" transform={`translate(${x}, ${y})`}>
-    <path d={TRUNK_PATH} fill="#7a6248" />
-    <rect
-      x={BLAZE.x}
-      y={BLAZE.y}
-      width={BLAZE.width}
-      height={BLAZE.height}
-      rx={BLAZE.rx}
-      fill={blazeColor}
+  <path d={TRUNK_PATH} fill="#7a6248" />
+  <rect
+    x={BLAZE.x}
+    y={BLAZE.y}
+    width={BLAZE.width}
+    height={BLAZE.height}
+    rx={BLAZE.rx}
+    fill={blazeColor}
+  />
+  {symbol === "thread" && (
+    <path
+      d="M-9,-54 Q-4,-60 0,-54 T9,-54"
+      fill="none"
+      stroke="#f7f6f1"
+      stroke-width="1.5"
+      stroke-linecap="round"
     />
-    {symbol === "thread" && (
-      <path
-        d="M-9,-54 Q-4,-60 0,-54 T9,-54"
-        fill="none"
-        stroke="#f7f6f1"
-        stroke-width="1.5"
-        stroke-linecap="round"
-      />
-    )}
-    {symbol === "dots" && (
-      <>
-        <line x1="-9" y1="-54" x2="9" y2="-54" stroke="#f7f6f1" stroke-width="1.5" stroke-linecap="round" />
-        <circle cx="-9" cy="-54" r="1.6" fill="#f7f6f1" />
-        <circle cx="9" cy="-54" r="1.6" fill="#f7f6f1" />
-      </>
-    )}
-    {symbol === "grid" && (
-      <>
-        <rect x="-7" y="-57" width="4" height="4" fill="#f7f6f1" />
-        <rect x="-1" y="-57" width="4" height="4" fill="#f7f6f1" />
-        <rect x="-7" y="-51" width="4" height="4" fill="#f7f6f1" />
-        <rect x="-1" y="-51" width="4" height="4" fill="#f7f6f1" />
-      </>
-    )}
-    <line x1="0" y1="-132" x2="0" y2="-110" stroke="#c9c7bd" stroke-width="1" stroke-dasharray="1,3" />
-    <rect x="-65" y="-160" width="130" height="28" rx="14" fill="#faf8f2" stroke="#ddd" stroke-width="0.5" />
-    <text x="0" y="-141" text-anchor="middle" font-size="14" fill="#33322d">{label}</text>
-  </g>
-</a>
+  )}
+  {symbol === "dots" && (
+    <>
+      <line x1="-9" y1="-54" x2="9" y2="-54" stroke="#f7f6f1" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="-9" cy="-54" r="1.6" fill="#f7f6f1" />
+      <circle cx="9" cy="-54" r="1.6" fill="#f7f6f1" />
+    </>
+  )}
+  {symbol === "grid" && (
+    <>
+      <rect x="-7" y="-57" width="4" height="4" fill="#f7f6f1" />
+      <rect x="-1" y="-57" width="4" height="4" fill="#f7f6f1" />
+      <rect x="-7" y="-51" width="4" height="4" fill="#f7f6f1" />
+      <rect x="-1" y="-51" width="4" height="4" fill="#f7f6f1" />
+    </>
+  )}
+  <line x1="0" y1="-132" x2="0" y2="-110" stroke="#c9c7bd" stroke-width="1" stroke-dasharray="1,3" />
+  <rect x="-65" y="-160" width="130" height="28" rx="14" fill="#faf8f2" stroke="#ddd" stroke-width="0.5" />
+  <text x="0" y="-141" text-anchor="middle" font-size="14" fill="#33322d">{label}</text>
+</g>
 
 <style>
   .waymarker-link {
@@ -74,11 +80,11 @@ const { x, y, blazeColor, symbol, label, href } = Astro.props;
     animation: waymarker-sway 6s ease-in-out infinite;
     transition: transform 0.4s ease, opacity 0.4s ease, filter 0.4s ease;
   }
-  .waymarker-link:focus-visible .waymarker-icon {
+  .waymarker-link:focus-visible {
     outline: 2px solid #33322d;
     outline-offset: 4px;
   }
-  .waymarker-link.is-tapped .waymarker-icon {
+  .waymarker-link.is-tapped {
     transform: scale(0.92);
     opacity: 0.88;
     filter: drop-shadow(0 0 6px var(--blaze-color));
@@ -95,16 +101,25 @@ const { x, y, blazeColor, symbol, label, href } = Astro.props;
 <script>
   // Tap feedback, then a short eased pause before the app actually opens —
   // so opening an app feels like stepping toward it, not an instant jump-cut.
-  document.querySelectorAll<HTMLAnchorElement>(".waymarker-link").forEach((link) => {
-    link.addEventListener("click", (event) => {
-      if (link.dataset.navigating) return;
-      event.preventDefault();
-      link.dataset.navigating = "true";
-      link.classList.add("is-tapped");
-      const href = link.getAttribute("href");
-      window.setTimeout(() => {
-        if (href) window.location.href = href;
-      }, 400);
+  // Handles both click and keyboard activation (Enter/Space), since this
+  // is a <g role="link"> rather than a real <a>.
+  function activate(el: SVGGElement) {
+    if (el.dataset.navigating) return;
+    el.dataset.navigating = "true";
+    el.classList.add("is-tapped");
+    const href = el.dataset.href;
+    window.setTimeout(() => {
+      if (href) window.location.href = href;
+    }, 400);
+  }
+
+  document.querySelectorAll<SVGGElement>(".waymarker-link").forEach((el) => {
+    el.addEventListener("click", () => activate(el));
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate(el);
+      }
     });
   });
 </script>
