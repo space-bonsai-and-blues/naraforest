@@ -4,10 +4,18 @@
 // apps. Position is given in the same viewBox coordinates as the parent
 // <Terrain> svg, so it stays proportionally placed at any screen size.
 //
-// Note: this used to be wrapped in an <a> tag, but browsers silently
-// break SVG content out of the svg tree when they hit a raw <a> inside
-// it (a quirk of HTML's "foreign content" parsing rules). So the link
-// role now lives on the <g> itself, handled entirely by the script below.
+// Two things to know about this file's structure:
+// 1. It used to be wrapped in an <a> tag, but browsers silently break
+//    SVG content out of the svg tree when they hit a raw <a> inside it
+//    (a quirk of HTML's "foreign content" parsing rules). So the link
+//    role lives on a <g> instead, handled by the script below.
+// 2. Positioning (translate(x, y)) and the sway/tap animation are on
+//    TWO SEPARATE nested <g> elements. If they were on the same element,
+//    the CSS animation's `transform` would completely replace the SVG
+//    `transform="translate(x, y)"` attribute (CSS transform overrides
+//    the SVG attribute rather than combining with it) — which is why
+//    icons were previously collapsing to the top-left corner instead of
+//    staying at their assigned spot.
 import { TRUNK_PATH, BLAZE } from "../lib/waymarker-shapes";
 import type { SymbolType } from "../lib/waymarker-shapes";
 
@@ -23,51 +31,52 @@ interface Props {
 const { x, y, blazeColor, symbol, label, href } = Astro.props;
 ---
 
-<g
-  class="waymarker-icon waymarker-link"
-  transform={`translate(${x}, ${y})`}
-  style={`--blaze-color: ${blazeColor}`}
-  role="link"
-  tabindex="0"
-  aria-label={label}
-  data-href={href}
->
-  <path d={TRUNK_PATH} fill="#7a6248" />
-  <rect
-    x={BLAZE.x}
-    y={BLAZE.y}
-    width={BLAZE.width}
-    height={BLAZE.height}
-    rx={BLAZE.rx}
-    fill={blazeColor}
-  />
-  {symbol === "thread" && (
-    <path
-      d="M-9,-54 Q-4,-60 0,-54 T9,-54"
-      fill="none"
-      stroke="#f7f6f1"
-      stroke-width="1.5"
-      stroke-linecap="round"
+<g transform={`translate(${x}, ${y})`}>
+  <g
+    class="waymarker-icon waymarker-link"
+    style={`--blaze-color: ${blazeColor}`}
+    role="link"
+    tabindex="0"
+    aria-label={label}
+    data-href={href}
+  >
+    <path d={TRUNK_PATH} fill="#7a6248" />
+    <rect
+      x={BLAZE.x}
+      y={BLAZE.y}
+      width={BLAZE.width}
+      height={BLAZE.height}
+      rx={BLAZE.rx}
+      fill={blazeColor}
     />
-  )}
-  {symbol === "dots" && (
-    <>
-      <line x1="-9" y1="-54" x2="9" y2="-54" stroke="#f7f6f1" stroke-width="1.5" stroke-linecap="round" />
-      <circle cx="-9" cy="-54" r="1.6" fill="#f7f6f1" />
-      <circle cx="9" cy="-54" r="1.6" fill="#f7f6f1" />
-    </>
-  )}
-  {symbol === "grid" && (
-    <>
-      <rect x="-7" y="-57" width="4" height="4" fill="#f7f6f1" />
-      <rect x="-1" y="-57" width="4" height="4" fill="#f7f6f1" />
-      <rect x="-7" y="-51" width="4" height="4" fill="#f7f6f1" />
-      <rect x="-1" y="-51" width="4" height="4" fill="#f7f6f1" />
-    </>
-  )}
-  <line x1="0" y1="-132" x2="0" y2="-110" stroke="#c9c7bd" stroke-width="1" stroke-dasharray="1,3" />
-  <rect x="-65" y="-160" width="130" height="28" rx="14" fill="#faf8f2" stroke="#ddd" stroke-width="0.5" />
-  <text x="0" y="-141" text-anchor="middle" font-size="14" fill="#33322d">{label}</text>
+    {symbol === "thread" && (
+      <path
+        d="M-9,-54 Q-4,-60 0,-54 T9,-54"
+        fill="none"
+        stroke="#f7f6f1"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+    )}
+    {symbol === "dots" && (
+      <>
+        <line x1="-9" y1="-54" x2="9" y2="-54" stroke="#f7f6f1" stroke-width="1.5" stroke-linecap="round" />
+        <circle cx="-9" cy="-54" r="1.6" fill="#f7f6f1" />
+        <circle cx="9" cy="-54" r="1.6" fill="#f7f6f1" />
+      </>
+    )}
+    {symbol === "grid" && (
+      <>
+        <rect x="-7" y="-57" width="4" height="4" fill="#f7f6f1" />
+        <rect x="-1" y="-57" width="4" height="4" fill="#f7f6f1" />
+        <rect x="-7" y="-51" width="4" height="4" fill="#f7f6f1" />
+        <rect x="-1" y="-51" width="4" height="4" fill="#f7f6f1" />
+      </>
+    )}
+    <line x1="0" y1="-132" x2="0" y2="-110" stroke="#c9c7bd" stroke-width="1" stroke-dasharray="1,3" />
+    <rect x="-65" y="-160" width="130" height="28" rx="14" fill="#faf8f2" stroke="#ddd" stroke-width="0.5" />
+    <text x="0" y="-141" text-anchor="middle" font-size="14" fill="#33322d">{label}</text>
+  </g>
 </g>
 
 <style>
