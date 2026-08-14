@@ -23,10 +23,10 @@ const items: LegendItem[] = [
   { color: "#3f9e83", name: "Logic Models", caption: "see the shape of it" },
 ];
 
-const cardWidth = 170;
+const cardWidth = 150;
 const rowHeight = 34;
-const paddingTop = 16;
-const cardHeight = paddingTop * 2 + rowHeight * items.length - 10;
+const paddingY = 18; // same value used top and bottom, kept equal on purpose
+const cardHeight = paddingY * 2 + rowHeight * (items.length - 1) + 22;
 ---
 
 <g class="map-legend" transform={`translate(${x}, ${y})`}>
@@ -39,8 +39,8 @@ const cardHeight = paddingTop * 2 + rowHeight * items.length - 10;
     stroke-width="0.5"
     opacity="0.95"
   />
-  {items.map((item, i) => {
-    const rowY = paddingTop + i * rowHeight;
+{items.map((item, i) => {
+    const rowY = paddingY + i * rowHeight;
     return (
       <g transform={`translate(16, ${rowY})`}>
         <circle cx="0" cy="0" r="4.5" fill={item.color} />
