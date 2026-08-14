@@ -1,0 +1,66 @@
+---
+// A compact map-legend card, not a forest object — deliberately has no
+// trunk, ground anchor, or dashed connector line. It floats in open sky
+// rather than competing with trees/waymarkers for ground space, and its
+// dot colors match each waymarker's blaze color so it also teaches the
+// color-coding used across the terrain.
+interface LegendItem {
+  color: string;
+  name: string;
+  caption: string;
+}
+
+interface Props {
+  x: number;
+  y: number;
+}
+
+const { x, y } = Astro.props;
+
+const items: LegendItem[] = [
+  { color: "#4a7fc9", name: "Thought Trail", caption: "clear your thoughts" },
+  { color: "#d9a13a", name: "Trailhead", caption: "weigh what matters" },
+  { color: "#3f9e83", name: "Logic Models", caption: "see the shape of it" },
+];
+
+const cardWidth = 170;
+const rowHeight = 34;
+const paddingTop = 16;
+const cardHeight = paddingTop * 2 + rowHeight * items.length - 10;
+---
+
+<g class="map-legend" transform={`translate(${x}, ${y})`}>
+  <rect
+    width={cardWidth}
+    height={cardHeight}
+    rx="12"
+    fill="#faf8f2"
+    stroke="#ddd"
+    stroke-width="0.5"
+    opacity="0.95"
+  />
+  {items.map((item, i) => {
+    const rowY = paddingTop + i * rowHeight;
+    return (
+      <g transform={`translate(16, ${rowY})`}>
+        <circle cx="0" cy="0" r="4.5" fill={item.color} />
+        <text
+          x="12"
+          y="4"
+          font-family="-apple-system, system-ui, 'Segoe UI', sans-serif"
+          font-size="13"
+          font-weight="600"
+          fill="#33322d"
+        >{item.name}</text>
+        <text
+          x="12"
+          y="18"
+          font-family="-apple-system, system-ui, 'Segoe UI', sans-serif"
+          font-size="10"
+          font-weight="400"
+          fill="#8a8880"
+        >{item.caption}</text>
+      </g>
+    );
+  })}
+</g>
