@@ -13,4 +13,4 @@ export const TRUNK_PATH =
 
 export const BLAZE = { x: -11, y: -30, width: 22, height: 13, rx: 2 };
 
-export type SymbolType = "thread" | "dots" | "grid";
+export type SymbolType = "thread" | "dots" | "grid" | "dots3";
