@@ -1,34 +1,25 @@
 ---
-// A compact map-legend card, not a forest object — deliberately has no
-// trunk, ground anchor, or dashed connector line. It floats in open sky
-// rather than competing with trees/waymarkers for ground space, and its
-// dot colors match each waymarker's blaze color so it also teaches the
-// color-coding used across the terrain.
 interface LegendItem {
   color: string;
   name: string;
   caption: string;
 }
-
 interface Props {
   x: number;
   y: number;
 }
-
 const { x, y } = Astro.props;
-
 const items: LegendItem[] = [
   { color: "#4a7fc9", name: "Thought Trail", caption: "clear your thoughts" },
   { color: "#d9a13a", name: "Trailhead", caption: "weigh what matters" },
-  { color: "#3f9e83", name: "Logic Models", caption: "see the shape of it" },
+  { color: "#3f9e83", name: "When in Complexity", caption: "see the shape of it" },
+  { color: "#c96f8c", name: "Secret of Life", caption: "three small things" },
 ];
-
 const cardWidth = 140;
 const rowHeight = 34;
-const paddingY = 18; // same value used top and bottom, kept equal on purpose
+const paddingY = 18;
 const cardHeight = paddingY * 2 + rowHeight * (items.length - 1) + 22;
 ---
-
 <g class="map-legend" transform={`translate(${x}, ${y})`}>
   <rect
     width={cardWidth}
